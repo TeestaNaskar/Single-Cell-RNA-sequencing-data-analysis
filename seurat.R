@@ -75,3 +75,18 @@ idx <- match(value, genemap$ensembl_gene_id)
 data$entrez <- genemap$entrezgene_id[idx]
 data$chr <- genemap$chromosome_name[idx]
 data$gene_name <- genemap$hgnc_symbol[idx]
+
+#data wrangling
+ens <- mapIds(EnsDb.Hsapiens.v79, keys =reference@assays$RNA@data@Dimnames[[1]], column ='SYMBOL', keytype ='GENEID')
+ens <- mapIds(EnsDb.Hsapiens.v79, keys = seuratObj@assays$RNA@data@Dimnames[[1]], column ='SYMBOL', keytype ='ENSEMBL')
+keys = seuratObj@assays$RNA@data@Dimnames[[1]]
+keys = sub("\\..*$", "", keys)
+length(ens)==length(keys) #it shoud Return 'TRUE'
+keep <- !is.na(ens) 
+ens <- ens[keep]
+
+seuratObj <- seuratObj[keep,] 
+seuratObj@assays$RNA@data@Dimnames[[1]]=ens 
+
+
+
